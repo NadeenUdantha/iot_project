@@ -16,7 +16,7 @@
                 $(function () {
                     freeboard.initialize(false, function () {
                         freeboard.setEditing(false);
-                        $.getJSON('/dashboard.json', function (data) {
+                        $.getJSON('dashboard.json', function (data) {
                             freeboard.loadDashboard(data, function () {
                                 freeboard.setEditing(false);
                             })
