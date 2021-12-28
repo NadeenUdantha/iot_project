@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>IOT Dashboard</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width = device-width, initial-scale = 1, user-scalable = no" />
+    <link href="css/freeboard.min.css" rel="stylesheet" />
+    <script src="js/freeboard.thirdparty.min.js"></script>
+    <script type="text/javascript">
+        head.js("js/freeboard_plugins.min.js",
+            function () {
+                $(function () {
+                    freeboard.initialize(false, function () {
+                        freeboard.setEditing(false);
+                        $.getJSON('/dashboard.json', function (data) {
+                            freeboard.loadDashboard(data, function () {
+                                freeboard.setEditing(false);
+                            })
+                        });
+                    });
+                });
+            });
+    </script>
+</head>
+
+<body>
+    <div id="board-content">
+        <img id="dash-logo" data-bind="attr:{src: header_image}, visible:header_image()">
+        <div class="gridster responsive-column-width">
+            <ul data-bind="grid: true">
+            </ul>
+        </div>
+    </div>
+    <header id="main-header" data-bind="if:allow_edit">
+    </header>
+
+    <div style="display:hidden">
+        <ul data-bind="template: { name: 'pane-template', foreach: panes}">
+        </ul>
+    </div>
+
+    <script type="text/html" id="pane-template">
+    <li data-bind="pane: true">
+        <header>
+            <h1 data-bind="text: title"></h1>
+            <ul class="board-toolbar pane-tools">
+                <li data-bind="pluginEditor: {operation: 'add', type: 'widget'}">
+                    <i class="icon-plus icon-white"></i>
+                </li>
+                <li data-bind="pluginEditor: {operation: 'edit', type: 'pane'}">
+                    <i class="icon-wrench icon-white"></i>
+                </li>
+                <li data-bind="pluginEditor: {operation: 'delete', type: 'pane'}">
+                    <i class="icon-trash icon-white"></i>
+                </li>
+            </ul>
+        </header>
+        <section data-bind="foreach: widgets">
+            <div class="sub-section" data-bind="css: 'sub-section-height-' + height()">
+                <div class="widget" data-bind="widget: true, css:{fillsize:fillSize}"></div>
+                <div class="sub-section-tools">
+                    <ul class="board-toolbar">
+                        <!-- ko if:$parent.widgetCanMoveUp($data) -->
+                        <li data-bind="click:$parent.moveWidgetUp"><i class="icon-chevron-up icon-white"></i></li>
+                        <!-- /ko -->
+                        <!-- ko if:$parent.widgetCanMoveDown($data) -->
+                        <li data-bind="click:$parent.moveWidgetDown"><i class="icon-chevron-down icon-white"></i></li>
+                        <!-- /ko -->
+                        <li data-bind="pluginEditor: {operation: 'edit', type: 'widget'}"><i class="icon-wrench icon-white"></i></li>
+                        <li data-bind="pluginEditor: {operation: 'delete', type: 'widget'}"><i class="icon-trash icon-white"></i></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </li>
+</script>
+
+</body>
+
+</html>
